@@ -1,7 +1,12 @@
 from flask import request, jsonify, make_response
-from application import app
+from application import app, db
 from functools import wraps
 from .models import User, Movie
+import uuid
+import jwt
+from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
+
 
 
 def token_required(f):
@@ -24,7 +29,6 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
 
     return decorated
-
 
 @app.route('/user', methods=['GET'])
 @token_required
@@ -68,17 +72,16 @@ def get_one_user(current_user, public_id):
     return jsonify({'user' : user_data})
 
 @app.route('/user', methods=['POST'])
-# @token_required
-def create_user():
+@token_required
+def create_user(current_user):
+    if not current_user.admin:
+        return jsonify({'message' : 'Cannot perform that function!'})
 
-    # if not current_user.admin:
-    #     return jsonify({'message' : 'Cannot perform that function!'})
+    data = request.get_json()
 
-    post_data = request.get_json()
+    hashed_password = generate_password_hash(data['password'], method='sha256')
 
-    hashed_password = generate_password_hash(post_data['password'], method='sha256')
-
-    new_user = User(public_id=str(uuid.uuid4()), name=post_data['name'], password=hashed_password, admin=False)
+    new_user = User(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=False)
     db.session.add(new_user)
     db.session.commit()
 
@@ -86,7 +89,7 @@ def create_user():
 
 @app.route('/user/<public_id>', methods=['PUT'])
 @token_required
-def promote_user(current_user, public_id):
+def make_admin(current_user, public_id):
     if not current_user.admin:
         return jsonify({'message' : 'Cannot perform that function!'})
 
@@ -98,11 +101,12 @@ def promote_user(current_user, public_id):
     user.admin = True
     db.session.commit()
 
-    return jsonify({'message' : 'The user has been promoted!'})
+    return jsonify({'message' : 'The user has been promoted to Admin!'})
 
 @app.route('/user/<public_id>', methods=['DELETE'])
 @token_required
 def delete_user(current_user, public_id):
+    
     if not current_user.admin:
         return jsonify({'message' : 'Cannot perform that function!'})
 
@@ -116,10 +120,28 @@ def delete_user(current_user, public_id):
 
     return jsonify({'message' : 'The user has been deleted!'})
 
+@app.route('/login')
+def login():
+    auth = request.authorization
+
+    if not auth or not auth.username or not auth.password:
+        return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
+
+    user = User.query.filter_by(name=auth.username).first()
+
+    if not user:
+        return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
+
+    if check_password_hash(user.password, auth.password):
+        token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+
+        return jsonify({'token' : token.decode('UTF-8')})
+
+    return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
 
 @app.route('/api/v1/movies', methods=['GET'])
 @token_required
-def get_all_movies():
+def get_all_movies(current_user):
 
     movies = Movie.query.all()
 

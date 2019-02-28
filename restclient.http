@@ -1,0 +1,28 @@
+GET http://localhost:5000/api/v1/movies
+
+
+### Create the user/register
+POST http://localhost:5000/user
+content-type: application/json
+
+{
+    "name": "Samuel",
+    "password": "123456"
+}
+
+### After creating the user login
+GET http://localhost:5000/login
+content-type: application/json
+Authorization: Basic Samuel 123456
+
+
+### GET ALL Users
+GET http://localhost:5000/user
+Content-Type: application/json
+x-access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwdWJsaWNfaWQiOiI3ZjU5MTA4Yi00OTA1LTRkYTMtYWVkMi1lODA3NDE0YjI2ZjAiLCJleHAiOjE1NTEzNjgxNjJ9.HZROjUN_6gu3cD-428rFUf-TENZp8G9TTHP4vM6krVY
+
+
+### Get All movies
+GET http://localhost:5000/api/v1/movies
+Content-Type: application/json
+x-access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwdWJsaWNfaWQiOiI3ZjU5MTA4Yi00OTA1LTRkYTMtYWVkMi1lODA3NDE0YjI2ZjAiLCJleHAiOjE1NTEzNjgxNjJ9.HZROjUN_6gu3cD-428rFUf-TENZp8G9TTHP4vM6krVY
