@@ -11,18 +11,26 @@ Rest api using python flask, sqlite3 and jwt
 
 
 ## Movies End Points
-### GET ALL MOVIES
-http://localhost:5000/api/v1/movies
+### ```GET ALL MOVIES```
+```bash
+    $ curl http://localhost:5000
+```
 (auth required)
 
-### GET MOVIE ID 1
-http://localhost:5000/api/v1/movies/1
+### ```GET MOVIE ID 1```
+```bash
+    $ curl http://localhost:5000/api/v1/movies/1
+```
 (auth required)
 
-### DELETE MOVIE ID 1
-http://localhost:5000/api/v1/movies/1
+### ```DELETE MOVIE ID 1```
+```bash
+    $ http://localhost:5000/api/v1/movies/1
+```
 (auth required)
 
-### PUT UPDATE MOVIE ID 1
-http://localhost:5000/api/v1/movies/1
+### ```PUT UPDATE MOVIE ID 1```
+```bash
+    $ curl http://localhost:5000/api/v1/movies/1
+```
 (auth required)
