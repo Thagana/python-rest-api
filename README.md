@@ -1,14 +1,7 @@
-# python-rest-api
-Rest api using python flask, sqlite3 and jwt
-## First Steps
-* create a user
-* login
-* include x-access-token everywhere needed
+# flaskflick
+Python REST API written in flask to save and retrive movies
 
-> Note! I have already create an admin create a user make him/her/X admin delete user admin then you are go to go
-
->Note! if you are using vs code you can install rest-client and open restclient.http test using those endpoints...this is very easy
-
+[Live Demo](https://flaskflick.herokuapp.com/)
 
 ## Movies End Points
 ### ```GET ALL MOVIES```
