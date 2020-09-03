@@ -6,7 +6,7 @@ Python REST API written in flask to save and retrive movies
 ## Movies End Points
 ### ```GET ALL MOVIES```
 ```bash
-    $ curl http://localhost:5000
+    $ curl http://localhost:5000/api/v1/movies/
 ```
 (auth required)
 
